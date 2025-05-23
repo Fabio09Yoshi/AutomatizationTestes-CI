@@ -1833,7 +1833,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1188219036}
-  enemyDamage: 50
+  enemyDamage: 25
 --- !u!1 &879915174
 GameObject:
   m_ObjectHideFlags: 0

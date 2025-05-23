@@ -66,6 +66,7 @@ public class PlayerController : MonoBehaviour
     public void Attack()
     {
         if (turnManager.gameEnded) return;
+
         attacking = true;
         transform.position = Vector3.MoveTowards(transform.position, enemyPosition.position, maxDistance);
         anim.SetBool("Attack", attacking);
@@ -79,7 +80,6 @@ public class PlayerController : MonoBehaviour
         attacking = false;
         anim.SetBool("Attack", attacking);
         transform.position = player_startPosition;
-        combatPanel.SetActive(true);
         turnManager.EndTurn();
     }
 
@@ -87,6 +87,7 @@ public class PlayerController : MonoBehaviour
     public void Defend()
     {
         if (turnManager.gameEnded) return;
+
         defending = true;
         anim.SetBool("Defend", defending);
         StartCoroutine("Defending");
@@ -131,7 +132,7 @@ public class PlayerController : MonoBehaviour
 
         healing = false;
         anim.SetBool("Healing", healing);
-        combatPanel.SetActive(true);
+
 
         if (numberOfPotions == 0)
         {
@@ -181,7 +182,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(waitTimeToHurt);
         hurting = false;
         anim.SetBool("Hurt", hurting);
-        combatPanel.SetActive(true);
+        //combatPanel.SetActive(true);
         
     }
     IEnumerator Die()
@@ -189,6 +190,7 @@ public class PlayerController : MonoBehaviour
         anim.SetTrigger("Die");
         turnManager.gameEnded = true;
         combatPanel.SetActive(false);
+        healtBar.SetActive(false);
         turnManager.ShowWinner("Enemy");
         yield return null;
     }
