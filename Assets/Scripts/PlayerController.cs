@@ -53,15 +53,7 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
         player_startPosition = transform.position;
         potionCountText.text = numberOfPotions.ToString();
-
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
 
     public void Attack()
     {
@@ -80,6 +72,7 @@ public class PlayerController : MonoBehaviour
         attacking = false;
         anim.SetBool("Attack", attacking);
         transform.position = player_startPosition;
+        enemyController.EnemyReceiveDamage(damage);
         turnManager.EndTurn();
     }
 
@@ -98,7 +91,6 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(waitTimeToDefend);
         defending = false;
         anim.SetBool("Defend", defending);
-        combatPanel.SetActive(true);
         turnManager.EndTurn();
     }
 
@@ -182,7 +174,6 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(waitTimeToHurt);
         hurting = false;
         anim.SetBool("Hurt", hurting);
-        //combatPanel.SetActive(true);
         
     }
     IEnumerator Die()
