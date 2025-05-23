@@ -1,9 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements.Experimental;
 using TMPro;
 
 public class PlayerController : MonoBehaviour
@@ -15,23 +12,27 @@ public class PlayerController : MonoBehaviour
     public int damage = 10;
     public int numberOfPotions = 3;
     public bool attacking;
-    public bool defending;
+
     public bool healing;
     public bool hurting;
+
     public float maxDistance = 5f;
     public float waitTimeAttack;
-    public float waitTimeToDefend;
     public float waitTimeToHeal;
     public float waitTimeToHurt;
 
-
     [Header("Health Settings")]
     public Slider healthBar;
-    public float healthUpdateDuration = 1f; // duração da animação da barra
-    public int potionHealAmount = 20;       // quanto a poção cura
+    public float healthUpdateDuration = 1f;
+    public int potionHealAmount = 20;
 
+    [Header("Defense Settings")]
+    public bool defending;
+    public bool isBlocking;
+    [Range(0f, 1f)] public float defenseBlock;
 
     Animator anim;
+
     [Header("Enemy")]
     public Transform enemyPosition;
     public EnemyController enemyController;
@@ -42,12 +43,9 @@ public class PlayerController : MonoBehaviour
     public Button healButton;
     public TextMeshProUGUI potionCountText;
 
-
     [Header("TurnManager")]
     public TurnManager turnManager;
 
-
-    // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -62,8 +60,7 @@ public class PlayerController : MonoBehaviour
         attacking = true;
         transform.position = Vector3.MoveTowards(transform.position, enemyPosition.position, maxDistance);
         anim.SetBool("Attack", attacking);
-        StartCoroutine("WaitAttack");
-        
+        StartCoroutine(WaitAttack());
     }
 
     IEnumerator WaitAttack()
@@ -76,22 +73,33 @@ public class PlayerController : MonoBehaviour
         turnManager.EndTurn();
     }
 
-
     public void Defend()
     {
         if (turnManager.gameEnded) return;
 
         defending = true;
-        anim.SetBool("Defend", defending);
-        StartCoroutine("Defending");
+        isBlocking = true;
+        anim.SetBool("Defend", true);
+
+        turnManager.EndTurn(); // Permite o inimigo atacar agora
     }
 
-    IEnumerator Defending()
+    public void ExitDefense()
     {
-        yield return new WaitForSeconds(waitTimeToDefend);
         defending = false;
-        anim.SetBool("Defend", defending);
-        turnManager.EndTurn();
+        isBlocking = false;
+        anim.SetBool("Defend", false);
+        anim.ResetTrigger("BlockImpact");
+    }
+
+    public void TriggerDefendImpactAnimation()
+    {
+        if (isBlocking)
+        {
+            anim.ResetTrigger("BlockImpact");
+            anim.SetTrigger("BlockImpact");
+            anim.Update(0f);
+        }
     }
 
     public void Heal()
@@ -104,9 +112,8 @@ public class PlayerController : MonoBehaviour
             numberOfPotions--;
             potionCountText.text = numberOfPotions.ToString();
             anim.SetBool("Healing", healing);
-            StartCoroutine("Healing");
+            StartCoroutine(Healing());
         }
-     
     }
 
     IEnumerator Healing()
@@ -114,17 +121,12 @@ public class PlayerController : MonoBehaviour
         int previousHealth = current_health;
         current_health = Mathf.Min(current_health + potionHealAmount, maxHealth);
 
-        healing = true;
-        anim.SetBool("Healing", healing);
-
-        // Inicia a animação da barra de vida junto com a animação de cura
         StartCoroutine(AnimateHealthBar(previousHealth, current_health, waitTimeToHeal));
 
         yield return new WaitForSeconds(waitTimeToHeal);
 
         healing = false;
         anim.SetBool("Healing", healing);
-
 
         if (numberOfPotions == 0)
         {
@@ -145,18 +147,39 @@ public class PlayerController : MonoBehaviour
             healthBar.value = Mathf.Lerp(from, to, t);
             yield return null;
         }
-            healthBar.value = to;
+        healthBar.value = to;
     }
 
     public void ReceiveDamage(int amount)
     {
         if (current_health <= 0) return;
 
+        if (isBlocking)
+        {
+            TriggerDefendImpactAnimation();
+
+            amount = Mathf.FloorToInt(amount * defenseBlock);
+
+            if (amount <= 0) return;
+
+            int previousHealth = current_health;
+            current_health = Mathf.Max(current_health - amount, 0);
+            StartCoroutine(AnimateHealthBar(previousHealth, current_health, healthUpdateDuration));
+
+            if (current_health <= 0)
+            {
+                StartCoroutine(Die());
+            }
+
+            return;
+        }
+
         hurting = true;
-        anim.SetBool("Hurt", hurting);
-        int previousHealth = current_health;
+        anim.SetBool("Hurt", true);
+
+        int prevHealth = current_health;
         current_health = Mathf.Max(current_health - amount, 0);
-        StartCoroutine(AnimateHealthBar(previousHealth, current_health, healthUpdateDuration));
+        StartCoroutine(AnimateHealthBar(prevHealth, current_health, healthUpdateDuration));
 
         if (current_health <= 0)
         {
@@ -169,13 +192,14 @@ public class PlayerController : MonoBehaviour
     }
 
 
+
     IEnumerator HurtAnimation()
     {
         yield return new WaitForSeconds(waitTimeToHurt);
         hurting = false;
-        anim.SetBool("Hurt", hurting);
-        
+        anim.SetBool("Hurt", false);
     }
+
     IEnumerator Die()
     {
         anim.SetTrigger("Die");
@@ -185,7 +209,4 @@ public class PlayerController : MonoBehaviour
         turnManager.ShowWinner("Enemy");
         yield return null;
     }
-
-
-
 }

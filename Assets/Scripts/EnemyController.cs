@@ -7,33 +7,94 @@ public class EnemyController : MonoBehaviour
     [Header("Controllers")]
     public PlayerController player;
     public TurnManager turnManager;
+    public Transform playerPosition;
 
     [Header("Enemy Stats")]
     public int enemyDamage;
     public int enemy_current_health = 100;
     public int enemy_max_health = 100;
     public bool enemy_hurting;
+    public bool enemy_attacking;
     private Animator anim;
+    public float enemy_waitTimeAttacking;
     public float enemy_waitTimeToHurt;
     public float enemy_waitTimeToRecover;
+
+    private Vector3 enemy_startPosition;
 
     [Header("Health Settings")]
     public Slider enemy_healthBar;
     public Button enemy_recoverButton;
     public float enemy_healthUpdateDuration = 1f;
 
-
-     void Start()
+    void Start()
     {
-        anim = GetComponent<Animator>();   
+        anim = GetComponent<Animator>();
+        enemy_startPosition = transform.position;
     }
+
     public void PerformAction()
     {
-        // Simula um ataque ao player
-        Debug.Log("Enemy attacks!");
-        player.ReceiveDamage(enemyDamage);
-        // Aqui pode adicionar animação e barra de vida também
+        if (enemy_current_health <= 0 || turnManager.gameEnded) return;
+        EnemyAttack();
     }
+
+    public void EnemyAttack()
+    {
+        if (!enemy_attacking)
+        {
+            StartCoroutine(EnemyAttackRoutine());
+        }
+    }
+
+    IEnumerator EnemyAttackRoutine()
+    {
+        enemy_attacking = true;
+        anim.SetBool("Attack", true);
+
+        Vector3 targetPosition = playerPosition.position;
+        float duration = 0.2f;
+        float elapsed = 0f;
+        Vector3 start = transform.position;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            transform.position = Vector3.Lerp(start, targetPosition, elapsed / duration);
+            yield return null;
+        }
+        transform.position = targetPosition;
+
+        yield return new WaitForSeconds(0.25f);
+
+        player.TriggerDefendImpactAnimation();
+        player.ReceiveDamage(enemyDamage);
+        //Delay
+        player.ExitDefense();
+
+        yield return new WaitForSeconds(enemy_waitTimeAttacking);
+
+
+
+
+        elapsed = 0f;
+        start = transform.position;
+        Vector3 returnTarget = enemy_startPosition;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            transform.position = Vector3.Lerp(start, returnTarget, elapsed / duration);
+            yield return null;
+        }
+        transform.position = returnTarget;
+
+        anim.SetBool("Attack", false);
+        enemy_attacking = false;
+
+        turnManager.StartTurn(Turn.Player);
+    }
+
 
     public void EnemyReceiveDamage(int amount)
     {
@@ -41,6 +102,7 @@ public class EnemyController : MonoBehaviour
 
         enemy_hurting = true;
         anim.SetBool("Hurt", enemy_hurting);
+
         int previousHealth = enemy_current_health;
         enemy_current_health = Mathf.Max(enemy_current_health - amount, 0);
         StartCoroutine(AnimateHealthBar(previousHealth, enemy_current_health, enemy_healthUpdateDuration));
@@ -48,7 +110,7 @@ public class EnemyController : MonoBehaviour
         if (enemy_current_health <= 0)
         {
             StartCoroutine(EnemyDie());
-            Debug.Log("Morreu)");
+            Debug.Log("Morreu");
         }
         else
         {
@@ -56,7 +118,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-     IEnumerator EnemyHurtAnimation()
+    IEnumerator EnemyHurtAnimation()
     {
         yield return new WaitForSeconds(enemy_waitTimeToHurt);
         enemy_hurting = false;
@@ -79,8 +141,9 @@ public class EnemyController : MonoBehaviour
     IEnumerator EnemyDie()
     {
         anim.SetTrigger("Die");
-        turnManager.gameEnded = true;     
+        turnManager.gameEnded = true;
         turnManager.ShowWinner("Player");
+        enemy_recoverButton.interactable = true;
         enemy_recoverButton.gameObject.SetActive(true);
         yield return null;
     }
@@ -91,11 +154,16 @@ public class EnemyController : MonoBehaviour
         anim.SetBool("Hurt", enemy_hurting);
         anim.ResetTrigger("Die");
         anim.SetTrigger("Recover");
+
+        enemy_recoverButton.interactable = false;
         enemy_recoverButton.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(enemy_waitTimeToRecover);
+
+        int previousHealth = enemy_current_health;
         enemy_current_health = enemy_max_health;
-        HealthBarRecover();
+        StartCoroutine(AnimateHealthBar(previousHealth, enemy_current_health, enemy_healthUpdateDuration));
+
         enemy_healthBar.gameObject.SetActive(true);
         turnManager.gameEnded = false;
         turnManager.StartTurn(Turn.Player);
@@ -103,17 +171,13 @@ public class EnemyController : MonoBehaviour
 
     public void EnemyRecoverStart()
     {
+        if (!enemy_recoverButton.interactable) return;
         StartCoroutine(EnemyRecoverAnimation());
-        //anim.ResetTrigger("Recover");
     }
 
     public void HealthBarRecover()
     {
-
-        int previousHealth = enemy_current_health;
-        enemy_current_health = enemy_max_health;
-        StartCoroutine(AnimateHealthBar(previousHealth, enemy_current_health, enemy_healthUpdateDuration));
-
+        int previousHealth = (int)enemy_healthBar.value;
+        StartCoroutine(AnimateHealthBar(previousHealth, enemy_max_health, enemy_healthUpdateDuration));
     }
-
 }

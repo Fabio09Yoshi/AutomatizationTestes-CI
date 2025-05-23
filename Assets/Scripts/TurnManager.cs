@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public enum Turn
 {
@@ -38,8 +39,14 @@ public class TurnManager : MonoBehaviour
         // Enemy age automaticamente no turno dele
         if (turn == Turn.Enemy)
         {
-            Invoke(nameof(EnemyAction), 1.5f); // Delay para parecer que pensa
+            StartCoroutine(EnemyTurnRoutine());
         }
+    }
+
+    IEnumerator EnemyTurnRoutine()
+    {
+        yield return new WaitForSeconds(0.5f); 
+        enemy.PerformAction();
     }
 
     public void EndTurn()

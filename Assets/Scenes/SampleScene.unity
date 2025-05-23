@@ -1813,10 +1813,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1188219036}
   turnManager: {fileID: 1566974226}
+  playerPosition: {fileID: 2060170390}
   enemyDamage: 25
   enemy_current_health: 100
   enemy_max_health: 100
   enemy_hurting: 0
+  enemy_attacking: 0
+  enemy_waitTimeAttacking: 0.4
   enemy_waitTimeToHurt: 0.5
   enemy_waitTimeToRecover: 1.2
   enemy_healthBar: {fileID: 1533358749}
@@ -2117,20 +2120,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   current_health: 100
   maxHealth: 100
-  damage: 50
+  damage: 25
   numberOfPotions: 3
   attacking: 0
-  defending: 0
   healing: 0
   hurting: 0
   maxDistance: 5
   waitTimeAttack: 0.7
-  waitTimeToDefend: 0.9
   waitTimeToHeal: 0.7
   waitTimeToHurt: 0.6
   healthBar: {fileID: 181337078}
   healthUpdateDuration: 1
   potionHealAmount: 20
+  defending: 0
+  isBlocking: 0
+  defenseBlock: 0
   enemyPosition: {fileID: 897666877}
   enemyController: {fileID: 820165588}
   combatPanel: {fileID: 1529820447}
