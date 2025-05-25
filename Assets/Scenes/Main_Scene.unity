@@ -2271,7 +2271,6 @@ MonoBehaviour:
   enemyPosition: {fileID: 897666877}
   enemyController: {fileID: 820165588}
   combatPanel: {fileID: 1529820447}
-  healtBar: {fileID: 181337076}
   healButton: {fileID: 610303746}
   potionCountText: {fileID: 758309724}
   restartGame: {fileID: 1912799151}
