@@ -39,7 +39,6 @@ public class PlayerController : MonoBehaviour
 
     [Header("UI")]
     public GameObject combatPanel;
-    public GameObject healtBar;
     public Button healButton;
     public TextMeshProUGUI potionCountText;
     public Button restartGame;
@@ -51,7 +50,13 @@ public class PlayerController : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         player_startPosition = transform.position;
-        potionCountText.text = numberOfPotions.ToString();
+
+        //Tratando um caso de Teste - Evitando erro de que o teste execute antes dos objetos e referências
+        if (potionCountText != null)
+        {
+            potionCountText.text = numberOfPotions.ToString();
+        }
+
     }
 
     public void Attack()
@@ -206,9 +211,29 @@ public class PlayerController : MonoBehaviour
         anim.SetTrigger("Die");
         turnManager.gameEnded = true;
         combatPanel.SetActive(false);
-        healtBar.SetActive(false);
+        healthBar.gameObject.SetActive(false);
         restartGame.gameObject.SetActive(true);
         turnManager.ShowWinner("Enemy");
         yield return null;
+    }
+
+    public void SetupPlayerControllerForTesting()
+    {
+        // Referenciamos todos os objetos que precisam de referencia
+        // Isso evita Erros de NullReference em testes
+        anim = gameObject.AddComponent<Animator>();
+        //Referencias de UI
+        healthBar = new GameObject("HealthBar").AddComponent<Slider>();
+        healButton = new GameObject("HealButton").AddComponent<Button>();
+        potionCountText = new GameObject("PotionText").AddComponent<TextMeshProUGUI>();
+        combatPanel = new GameObject("CombatPanel");
+        restartGame = new GameObject("RestartGame").AddComponent<Button>();
+        //Referencia do Turn Manager
+        turnManager = new GameObject("TurnManager").AddComponent<TurnManager>();
+        turnManager.turnText = new GameObject("TurnText").AddComponent<TextMeshProUGUI>();
+        turnManager.player = this;
+        //Referencia do Inimigo
+        enemyPosition = new GameObject("Enemy").transform;
+        enemyController = new GameObject("EnemyController").AddComponent<EnemyController>();
     }
 }

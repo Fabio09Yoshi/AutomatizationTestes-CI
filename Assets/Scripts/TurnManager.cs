@@ -25,18 +25,18 @@ public class TurnManager : MonoBehaviour
 
     public void StartTurn(Turn turn)
     {
-        // Impede início de turno após o jogo acabar
+
         if (gameEnded) return;
 
         currentTurn = turn;
 
-        // Atualiza UI
         SetTurnText($"{turn.ToString()}'s Turn");
 
-        // Ativa/Desativa painel de ações
-        player.combatPanel.SetActive(turn == Turn.Player);
+        if (turn == Turn.Player)
+            player.combatPanel.SetActive(turn == Turn.Player);
 
-        // Enemy age automaticamente no turno dele
+
+
         if (turn == Turn.Enemy)
         {
             StartCoroutine(EnemyTurnRoutine());
@@ -51,7 +51,7 @@ public class TurnManager : MonoBehaviour
 
     public void EndTurn()
     {
-        if (gameEnded) return; // Impede troca de turno após fim do jogo
+        if (gameEnded) return;
 
         if (currentTurn == Turn.Player)
         {
@@ -65,21 +65,38 @@ public class TurnManager : MonoBehaviour
 
     void EnemyAction()
     {
-        if (gameEnded) return; // Evita ação inimiga após fim do jogo
+        if (gameEnded) return;
         enemy.PerformAction();
         Invoke(nameof(EndTurn), 2f);
     }
 
     public void SetTurnText(string text)
     {
-        if (gameEnded) return; // Impede sobreescrever após vitória
-        turnText.text = text;
+        if (gameEnded) return;
+
+        //Tratando um caso de Teste - Evitando erro de que o teste execute antes dos objetos e referências
+        if (turnText != null)
+            turnText.text = text;
     }
 
     public void ShowWinner(string winner)
     {
-        gameEnded = true; // IMPORTANTE: sinaliza fim do jogo
+        gameEnded = true; 
         turnText.text = $"{winner} Wins!";
-        player.combatPanel.SetActive(false); // Oculta ações
+        player.combatPanel.SetActive(false);
     }
+
+    public void SetupTurnManagerForTesting()
+    {        
+        // Referenciamos todos os objetos que precisam de referencia
+        // Isso evita Erros de NullReference em testes
+        turnText = new GameObject("TurnText").AddComponent<TextMeshProUGUI>();
+
+        player = new GameObject("Player").AddComponent<PlayerController>();
+        player.combatPanel = new GameObject("CombatPanel");
+
+        enemy = new GameObject("Enemy").AddComponent<EnemyController>();
+    }
+
+
 }
