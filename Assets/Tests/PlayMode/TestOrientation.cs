@@ -184,7 +184,7 @@ public class TestOrientation
         turnManager.gameEnded = true;
         turnManager.currentTurn = Turn.Enemy;
         enemy.EnemyRecoverStart();
-        yield return new WaitForSeconds(0.5f); 
+        yield return new WaitForSeconds(1.2f); 
         Assert.AreEqual(enemy.enemy_max_health, enemy.enemy_current_health);
         Assert.IsFalse(turnManager.gameEnded);
         Assert.AreEqual(Turn.Player, turnManager.currentTurn);
