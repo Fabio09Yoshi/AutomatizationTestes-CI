@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour
     public GameObject healtBar;
     public Button healButton;
     public TextMeshProUGUI potionCountText;
+    public Button restartGame;
 
     [Header("TurnManager")]
     public TurnManager turnManager;
@@ -206,6 +207,7 @@ public class PlayerController : MonoBehaviour
         turnManager.gameEnded = true;
         combatPanel.SetActive(false);
         healtBar.SetActive(false);
+        restartGame.gameObject.SetActive(true);
         turnManager.ShowWinner("Enemy");
         yield return null;
     }
