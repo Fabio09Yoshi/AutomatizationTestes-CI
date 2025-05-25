@@ -1819,6 +1819,7 @@ MonoBehaviour:
   enemy_max_health: 100
   enemy_hurting: 0
   enemy_attacking: 0
+  anim: {fileID: 820165589}
   enemy_waitTimeAttacking: 0.4
   enemy_waitTimeToHurt: 0.5
   enemy_waitTimeToRecover: 1.2
@@ -2268,6 +2269,7 @@ MonoBehaviour:
   defending: 0
   isBlocking: 0
   defenseBlock: 0
+  anim: {fileID: 0}
   enemyPosition: {fileID: 897666877}
   enemyController: {fileID: 820165588}
   combatPanel: {fileID: 1529820447}

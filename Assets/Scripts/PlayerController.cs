@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     public int damage = 10;
     public int numberOfPotions = 3;
     public bool attacking;
+    public bool playerIsDead;
 
     public bool healing;
     public bool hurting;
@@ -31,7 +32,7 @@ public class PlayerController : MonoBehaviour
     public bool isBlocking;
     [Range(0f, 1f)] public float defenseBlock;
 
-    Animator anim;
+    public Animator anim;
 
     [Header("Enemy")]
     public Transform enemyPosition;
@@ -48,6 +49,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        playerIsDead = false;
         anim = GetComponent<Animator>();
         player_startPosition = transform.position;
 
@@ -208,6 +210,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Die()
     {
+        playerIsDead = true;
         anim.SetTrigger("Die");
         turnManager.gameEnded = true;
         combatPanel.SetActive(false);

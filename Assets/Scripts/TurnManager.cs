@@ -63,7 +63,7 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    void EnemyAction()
+    public void EnemyAction()
     {
         if (gameEnded) return;
         enemy.PerformAction();

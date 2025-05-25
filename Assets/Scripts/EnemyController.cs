@@ -16,7 +16,8 @@ public class EnemyController : MonoBehaviour
     public int enemy_max_health = 100;
     public bool enemy_hurting;
     public bool enemy_attacking;
-    private Animator anim;
+    public bool isDead;
+    public Animator anim;
     public float enemy_waitTimeAttacking;
     public float enemy_waitTimeToHurt;
     public float enemy_waitTimeToRecover;
@@ -30,7 +31,7 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
-        anim = GetComponent<Animator>();
+        anim = gameObject.GetComponent<Animator>();
         enemy_startPosition = transform.position;
     }
 
@@ -70,7 +71,6 @@ public class EnemyController : MonoBehaviour
 
         player.TriggerDefendImpactAnimation();
         player.ReceiveDamage(enemyDamage);
-        //Delay
         player.ExitDefense();
 
         yield return new WaitForSeconds(enemy_waitTimeAttacking);
@@ -110,6 +110,7 @@ public class EnemyController : MonoBehaviour
 
         if (enemy_current_health <= 0)
         {
+            isDead= true;
             StartCoroutine(EnemyDie());
             Debug.Log("Morreu");
         }
