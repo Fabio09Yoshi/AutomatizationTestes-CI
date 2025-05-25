@@ -86,17 +86,17 @@ public class TurnManager : MonoBehaviour
         player.combatPanel.SetActive(false);
     }
 
-    public void SetupTurnManagerForTesting()
-    {        
-        // Referenciamos todos os objetos que precisam de referencia
-        // Isso evita Erros de NullReference em testes
-        turnText = new GameObject("TurnText").AddComponent<TextMeshProUGUI>();
+    //public void SetupTurnManagerForTesting()
+    //{        
+    //    // Referenciamos todos os objetos que precisam de referencia
+    //    // Isso evita Erros de NullReference em testes
+    //    turnText = new GameObject("TurnText").AddComponent<TextMeshProUGUI>();
 
-        player = new GameObject("Player").AddComponent<PlayerController>();
-        player.combatPanel = new GameObject("CombatPanel");
+    //    player = new GameObject("Player").AddComponent<PlayerController>();
+    //    player.combatPanel = new GameObject("CombatPanel");
 
-        enemy = new GameObject("Enemy").AddComponent<EnemyController>();
-    }
+    //    enemy = new GameObject("Enemy").AddComponent<EnemyController>();
+    //}
 
 
 }

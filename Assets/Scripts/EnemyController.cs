@@ -182,20 +182,20 @@ public class EnemyController : MonoBehaviour
         StartCoroutine(AnimateHealthBar(previousHealth, enemy_max_health, enemy_healthUpdateDuration));
     }
 
-    public void SetupEnemyControllerForTesting()
-    {
-        // Referenciamos todos os objetos que precisam de referencia
-        // Isso evita Erros de NullReference em testes
-        anim = gameObject.AddComponent<Animator>();
-        //Referencias de UI
-        enemy_healthBar = new GameObject("HealthBar").AddComponent<Slider>();
-        enemy_recoverButton = new GameObject("Enemy_RecoverButton").AddComponent<Button>();
-        //Referencia do Turn Manager
-        turnManager = new GameObject("TurnManager").AddComponent<TurnManager>();
-        turnManager.turnText = new GameObject("TurnText").AddComponent<TextMeshProUGUI>();
-        turnManager.enemy = this;
-        //Referencia do Player
-        playerPosition = new GameObject("Player").transform;
-        player = new GameObject("PlayerController").AddComponent<PlayerController>();
-    }
+    //public void SetupEnemyControllerForTesting()
+    //{
+    //    // Referenciamos todos os objetos que precisam de referencia
+    //    // Isso evita Erros de NullReference em testes
+    //    anim = gameObject.AddComponent<Animator>();
+    //    //Referencias de UI
+    //    enemy_healthBar = new GameObject("HealthBar").AddComponent<Slider>();
+    //    enemy_recoverButton = new GameObject("Enemy_RecoverButton").AddComponent<Button>();
+    //    //Referencia do Turn Manager
+    //    turnManager = new GameObject("TurnManager").AddComponent<TurnManager>();
+    //    turnManager.turnText = new GameObject("TurnText").AddComponent<TextMeshProUGUI>();
+    //    turnManager.enemy = this;
+    //    //Referencia do Player
+    //    playerPosition = new GameObject("Player").transform;
+    //    player = new GameObject("PlayerController").AddComponent<PlayerController>();
+    //}
 }

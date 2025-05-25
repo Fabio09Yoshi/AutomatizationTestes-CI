@@ -217,23 +217,23 @@ public class PlayerController : MonoBehaviour
         yield return null;
     }
 
-    public void SetupPlayerControllerForTesting()
-    {
-        // Referenciamos todos os objetos que precisam de referencia
-        // Isso evita Erros de NullReference em testes
-        anim = gameObject.AddComponent<Animator>();
-        //Referencias de UI
-        healthBar = new GameObject("HealthBar").AddComponent<Slider>();
-        healButton = new GameObject("HealButton").AddComponent<Button>();
-        potionCountText = new GameObject("PotionText").AddComponent<TextMeshProUGUI>();
-        combatPanel = new GameObject("CombatPanel");
-        restartGame = new GameObject("RestartGame").AddComponent<Button>();
-        //Referencia do Turn Manager
-        turnManager = new GameObject("TurnManager").AddComponent<TurnManager>();
-        turnManager.turnText = new GameObject("TurnText").AddComponent<TextMeshProUGUI>();
-        turnManager.player = this;
-        //Referencia do Inimigo
-        enemyPosition = new GameObject("Enemy").transform;
-        enemyController = new GameObject("EnemyController").AddComponent<EnemyController>();
-    }
+    //public void SetupPlayerControllerForTesting()
+    //{
+    //    // Referenciamos todos os objetos que precisam de referencia
+    //    // Isso evita Erros de NullReference em testes
+    //    anim = gameObject.AddComponent<Animator>();
+    //    //Referencias de UI
+    //    healthBar = new GameObject("HealthBar").AddComponent<Slider>();
+    //    healButton = new GameObject("HealButton").AddComponent<Button>();
+    //    potionCountText = new GameObject("PotionText").AddComponent<TextMeshProUGUI>();
+    //    combatPanel = new GameObject("CombatPanel");
+    //    restartGame = new GameObject("RestartGame").AddComponent<Button>();
+    //    //Referencia do Turn Manager
+    //    turnManager = new GameObject("TurnManager").AddComponent<TurnManager>();
+    //    turnManager.turnText = new GameObject("TurnText").AddComponent<TextMeshProUGUI>();
+    //    turnManager.player = this;
+    //    //Referencia do Inimigo
+    //    enemyPosition = new GameObject("Enemy").transform;
+    //    enemyController = new GameObject("EnemyController").AddComponent<EnemyController>();
+    //}
 }
