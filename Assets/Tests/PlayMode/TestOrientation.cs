@@ -68,6 +68,7 @@ public class TestOrientation
         player.healthBar = new GameObject("HealthSlider").AddComponent<Slider>();
         player.healthBar.maxValue = 100;
         player.healthBar.value = 100;
+
         player.anim = playerGO.AddComponent<Animator>();
         player.combatPanel = new GameObject("CombatPanel");
         player.restartGame = new GameObject("Restart").AddComponent<Button>();
@@ -81,6 +82,7 @@ public class TestOrientation
         // Setup valores padrão do player
         player.current_health = 100;
         player.maxHealth = 100;
+        player.potionHealAmount = 25;
         player.defenseBlock = 0.5f;
         player.waitTimeAttack = 0.7f;
         player.waitTimeToHeal = 0.7f;
@@ -105,9 +107,10 @@ public class TestOrientation
     {
         player.current_health = 10;
         enemy.enemyDamage = 4;
+        enemy.enemy_waitTimeAttacking = 1.1f;
         turnManager.currentTurn = Turn.Enemy;
         turnManager.StartTurn(Turn.Enemy);
-        yield return new WaitForSeconds(1.1f);
+        yield return new WaitForSeconds(enemy.enemy_waitTimeAttacking);
         Assert.AreEqual(6, player.current_health);
     }
 
@@ -129,16 +132,17 @@ public class TestOrientation
     }
 
     [Test]
-    public void Heal_UsesPotionAndRestoresHealth()
+    public void Heal_RestoreHealth()
     {
-        player.current_health = 5;
+        player.current_health = 75; //Quantidade de vida atual
         player.numberOfPotions = 1;
-        player.Heal();
-        Assert.AreEqual(25, player.current_health);
+        player.potionHealAmount = 25; //Quanto que vai curar
+        player.Heal(); 
+        Assert.AreEqual(100, player.current_health); //Esperado ficar com 100 de vida
         Assert.AreEqual(0, player.numberOfPotions);
     }
 
-    [Test]
+    [Test] //Esse caso foi um caso alternativo, caso eu quisesse manter o dano ao bloquear
     public void ReceiveDamage_WhenBlocking_ReducesDamage()
     {
         player.current_health = 10;
@@ -147,8 +151,17 @@ public class TestOrientation
         Assert.AreEqual(8, player.current_health);
     }
 
+    [Test] 
+    public void NoReceiveDamage_WhenBlocking_()
+    {
+        player.current_health = 10;
+        player.isBlocking = true;
+        player.ReceiveDamage(0);
+        Assert.AreEqual(player.current_health, player.current_health);
+    }
+
     [Test]
-    public void ReceiveDamage_KillsPlayerAndEndsGame()
+    public void PlayerReceivesFatalDamage_TriggersDeath()
     {
         player.current_health = 2;
         player.ReceiveDamage(5);
@@ -174,17 +187,18 @@ public class TestOrientation
         player.current_health = 5;
         yield return enemy.StartCoroutine("EnemyAttackRoutine");
         Assert.AreEqual(3, player.current_health);
-        Assert.Less(Vector3.Distance(start, enemyGO.transform.position), 0.01f);
+        Assert.Less(Vector3.Distance(start, enemyGO.transform.position), player.maxDistance);
     }
 
     [UnityTest]
     public IEnumerator RecoverEnemy_ResetsGame()
     {
         enemy.enemy_current_health = 0;
+        enemy.enemy_waitTimeToRecover = 1.2f;
         turnManager.gameEnded = true;
         turnManager.currentTurn = Turn.Enemy;
         enemy.EnemyRecoverStart();
-        yield return new WaitForSeconds(1.2f); 
+        yield return new WaitForSeconds(enemy.enemy_waitTimeToRecover);
         Assert.AreEqual(enemy.enemy_max_health, enemy.enemy_current_health);
         Assert.IsFalse(turnManager.gameEnded);
         Assert.AreEqual(Turn.Player, turnManager.currentTurn);

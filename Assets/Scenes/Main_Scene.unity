@@ -1819,6 +1819,7 @@ MonoBehaviour:
   enemy_max_health: 100
   enemy_hurting: 0
   enemy_attacking: 0
+  isDead: 0
   anim: {fileID: 820165589}
   enemy_waitTimeAttacking: 0.4
   enemy_waitTimeToHurt: 0.5
@@ -2257,6 +2258,7 @@ MonoBehaviour:
   damage: 25
   numberOfPotions: 3
   attacking: 0
+  playerIsDead: 0
   healing: 0
   hurting: 0
   maxDistance: 5
@@ -2265,7 +2267,7 @@ MonoBehaviour:
   waitTimeToHurt: 0.6
   healthBar: {fileID: 181337078}
   healthUpdateDuration: 1
-  potionHealAmount: 35
+  potionHealAmount: 25
   defending: 0
   isBlocking: 0
   defenseBlock: 0
