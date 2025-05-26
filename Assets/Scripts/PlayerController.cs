@@ -134,15 +134,24 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(waitTimeToHeal);
 
         healing = false;
-        anim.SetBool("Healing", healing);
 
-        if (numberOfPotions == 0)
+        if (anim != null && anim.runtimeAnimatorController != null)
+        {
+            anim.SetBool("Healing", healing);
+        }
+
+        if (numberOfPotions == 0 && healButton != null && healButton.image != null)
         {
             healButton.image.color = Color.black;
             healButton.interactable = false;
         }
 
-        turnManager.EndTurn();
+
+        if (turnManager != null)
+        {
+            turnManager.EndTurn();
+        }
+
     }
 
     IEnumerator AnimateHealthBar(float from, float to, float duration)
