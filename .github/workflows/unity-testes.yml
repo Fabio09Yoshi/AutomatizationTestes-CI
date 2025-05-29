@@ -11,22 +11,15 @@ jobs:
     runs-on: self-hosted
     timeout-minutes: 5
 
-    defaults:
-      run:
-        shell: powershell
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set PowerShell Execution Policy
-        run: Set-ExecutionPolicy RemoteSigned -Scope Process -Force
-
       - name: Run PlayMode tests
         run: >
           "C:\Program Files\Unity\Hub\Editor\2022.3.6f1\Editor\Unity.exe" -runTests
-          -projectPath $env:GITHUB_WORKSPACE
+          -projectPath ${{ github.workspace }}
           -testPlatform PlayMode
-          -logfile "$env:GITHUB_WORKSPACE\playmode-log.txt"
-          -testResults "$env:GITHUB_WORKSPACE\playmode-results.xml"
+          -logfile ${{ github.workspace }}\playmode-log.txt
+          -testResults ${{ github.workspace }}\playmode-results.xml
           -batchmode -nographics -quit
