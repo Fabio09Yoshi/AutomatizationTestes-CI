@@ -19,9 +19,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Set PowerShell Execution Policy
+        run: Set-ExecutionPolicy RemoteSigned -Scope Process -Force
+
       - name: Run PlayMode tests
         run: >
-          Set-ExecutionPolicy RemoteSigned -Scope Process -Force;
           "C:\Program Files\Unity\Hub\Editor\2022.3.6f1\Editor\Unity.exe" -runTests
           -projectPath $env:GITHUB_WORKSPACE
           -testPlatform PlayMode
