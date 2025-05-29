@@ -2,7 +2,7 @@ name: Unity PlayMode Tests
 
 on:
   push:
-    branches: [main]
+    branches: [main, Automatization-Tests]
   pull_request:
 
 jobs:
