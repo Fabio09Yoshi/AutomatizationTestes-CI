@@ -18,7 +18,7 @@ jobs:
       - name: Run PlayMode tests
         shell: powershell
         run: |
-          $unityPath = "C:\Program Files\Unity\Hub\Editor\2022.3.6f1\Editor\Unity.exe"
+          $unityPath = "C:\Program Files\Unity\Hub\Editor\2022.3.62f1\Editor\Unity.exe"
           $projectPath = "${{ github.workspace }}"
           $logFile = "$projectPath\playmode-log.txt"
           $resultsFile = "$projectPath\playmode-results.xml"
