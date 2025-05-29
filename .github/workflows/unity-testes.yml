@@ -7,10 +7,7 @@ on:
 
 jobs:
   playmode-tests:
-    name: Run PlayMode Tests
     runs-on: self-hosted
-    timeout-minutes: 5
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -23,4 +20,17 @@ jobs:
           $logFile = "$projectPath\playmode-log.txt"
           $resultsFile = "$projectPath\playmode-results.xml"
 
-          & "$unityPath" -runTests -projectPath "$projectPath" -testPlatform PlayMode -logfile "$logFile" -testResults "$resultsFile" -batchmode -nographics -quit
+          & "$unityPath" -runTests `
+            -projectPath "$projectPath" `
+            -testPlatform PlayMode `
+            -logfile "$logFile" `
+            -testResults "$resultsFile" `
+            -batchmode `
+            -nographics `
+            -quit
+
+      - name: Upload PlayMode test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: playmode-test-results
+          path: playmode-results.xml
