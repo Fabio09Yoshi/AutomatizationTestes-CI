@@ -1,0 +1,25 @@
+name: Unity PlayMode Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  playmode-tests:
+    name: Run PlayMode Tests
+    runs-on: self-hosted
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run PlayMode tests
+        run: >
+          "C:\Program Files\Unity\Hub\Editor\2022.3.6f1\Editor\Unity.exe" -runTests
+          -projectPath ${{ github.workspace }}
+          -testPlatform PlayMode
+          -logfile ${{ github.workspace }}\playmode-log.txt
+          -testResults ${{ github.workspace }}\playmode-results.xml
+          -batchmode -nographics -quit
