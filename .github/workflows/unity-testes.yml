@@ -23,4 +23,4 @@ jobs:
           $logFile = "$projectPath\playmode-log.txt"
           $resultsFile = "$projectPath\playmode-results.xml"
 
-          Start-Process -FilePath $unityPath -ArgumentList "-runTests -projectPath `"$projectPath`" -testPlatform PlayMode -logfile `"$logFile`" -testResults `"$resultsFile`" -batchmode -nographics -quit" -Wait -NoNewWindow
+          & "$unityPath" -runTests -projectPath "$projectPath" -testPlatform PlayMode -logfile "$logFile" -testResults "$resultsFile" -batchmode -nographics -quit
